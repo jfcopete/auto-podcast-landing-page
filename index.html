@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Podcast Generator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="hero">
+        <h1>AI Podcast Generator</h1>
+        <p>Podcasts diarios y personalizados en menos de 5 minutos.</p>
+        <div class="cta">
+            <input type="email" id="email" placeholder="Tu email" required>
+            <select id="categories" multiple>
+                <option value="marketing">Marketing</option>
+                <option value="tech">Tech</option>
+                <option value="cultura">Cultura</option>
+                <option value="finanzas">Finanzas</option>
+                <option value="deportes">Deportes</option>
+                <option value="salud">Salud</option>
+                <option value="arte">Arte</option>
+            </select>
+            <button id="subscribe">Quiero mi podcast a medida</button>
+            <p id="message"></p>
+            <p class="counter">Interesados: <span id="count">0</span></p>
+        </div>
+    </header>
+    <section class="features">
+        <h2>Características de Performance</h2>
+        <ul>
+            <li>Ajusta la profundidad del contenido: titulares breves o análisis profundos.</li>
+            <li>Fuentes claras y confiables en cada episodio.</li>
+            <li>Episodios rápidos de 3 a 5 minutos.</li>
+        </ul>
+    </section>
+    <section class="delighters">
+        <h2>Delighters</h2>
+        <ul>
+            <li>Easter Eggs personalizados con tus artistas o eventos favoritos.</li>
+            <li>Episodios on‑demand cuando tú quieras.</li>
+            <li>Voz natural y cercana.</li>
+        </ul>
+    </section>
+    <section class="testimonials">
+        <blockquote>“Por fin un podcast a mi ritmo, sin perderme nada importante.”</blockquote>
+        <blockquote>“Me encanta que el resumen suene natural y siempre mencione algo personal.”</blockquote>
+    </section>
+    <footer>
+        <p>Tu email no será almacenado, solo sumará al contador de interesados.</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>
