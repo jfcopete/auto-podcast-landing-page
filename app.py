@@ -295,60 +295,203 @@ def submit_kano_survey():
     except Exception as e:
         return jsonify({'success': False, 'message': 'Error interno del servidor'}), 500
 
-@app.route('/api/export-csv')
-def export_csv():
-    """Export all data to CSV files"""
+@app.route('/api/export-data')
+def export_data():
+    """Export all data as JSON"""
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
         
         # Get all emails
-        cursor.execute('SELECT * FROM email_submissions')
+        cursor.execute('SELECT * FROM email_submissions ORDER BY timestamp DESC')
         emails = cursor.fetchall()
         
-        # Write emails to CSV
-        with open(CSV_EMAILS_FILE, 'w', newline='', encoding='utf-8') as csvfile:
-            writer = csv.writer(csvfile)
-            writer.writerow(['id', 'email', 'categories', 'podcast_request', 'ip_address', 'timestamp'])
-            for email in emails:
-                writer.writerow([email['id'], email['email'], email['categories'], email['podcast_request'], email['ip_address'], email['timestamp']])
+        # Convert emails to list of dictionaries
+        emails_data = []
+        for email in emails:
+            emails_data.append({
+                'id': email['id'],
+                'email': email['email'],
+                'categories': email['categories'].split(',') if email['categories'] else [],
+                'podcast_request': email['podcast_request'],
+                'ip_address': email['ip_address'],
+                'timestamp': email['timestamp']
+            })
         
-        # Write feedback to CSV
-        cursor.execute('SELECT * FROM feedback')
+        # Get all feedback
+        cursor.execute('SELECT * FROM feedback ORDER BY timestamp DESC')
         feedbacks = cursor.fetchall()
         
-        with open(CSV_FEEDBACK_FILE, 'w', newline='', encoding='utf-8') as csvfile:
-            writer = csv.writer(csvfile)
-            writer.writerow(['id', 'type', 'content', 'email', 'ip_address', 'timestamp'])
-            for feedback in feedbacks:
-                writer.writerow([feedback['id'], feedback['type'], feedback['content'], feedback['email'], feedback['ip_address'], feedback['timestamp']])
+        # Convert feedback to list of dictionaries
+        feedbacks_data = []
+        for feedback in feedbacks:
+            feedbacks_data.append({
+                'id': feedback['id'],
+                'type': feedback['type'],
+                'content': feedback['content'],
+                'email': feedback['email'],
+                'ip_address': feedback['ip_address'],
+                'timestamp': feedback['timestamp']
+            })
         
-        # Write Kano surveys to CSV
-        cursor.execute('SELECT * FROM kano_surveys')
+        # Get all Kano surveys
+        cursor.execute('SELECT * FROM kano_surveys ORDER BY timestamp DESC')
         surveys = cursor.fetchall()
         
-        with open('/data/kano_surveys.csv', 'w', newline='', encoding='utf-8') as csvfile:
-            writer = csv.writer(csvfile)
-            writer.writerow([
-                'id', 'email', 'ip_address', 'timestamp',
-                'personalizacion_funcional', 'personalizacion_disfuncional', 'duracion_funcional', 'duracion_disfuncional',
-                'voz_funcional', 'voz_disfuncional', 'fuentes_funcional', 'fuentes_disfuncional'
-            ])
-            for survey in surveys:
-                writer.writerow([
-                    survey['id'], survey['email'], survey['ip_address'], survey['timestamp'],
-                    survey['personalizacion_funcional'], survey['personalizacion_disfuncional'],
-                    survey['duracion_funcional'], survey['duracion_disfuncional'],
-                    survey['voz_funcional'], survey['voz_disfuncional'],
-                    survey['fuentes_funcional'], survey['fuentes_disfuncional']
-                ])
+        # Convert surveys to list of dictionaries
+        surveys_data = []
+        for survey in surveys:
+            surveys_data.append({
+                'id': survey['id'],
+                'email': survey['email'],
+                'ip_address': survey['ip_address'],
+                'timestamp': survey['timestamp'],
+                'personalizacion_funcional': survey['personalizacion_funcional'],
+                'personalizacion_disfuncional': survey['personalizacion_disfuncional'],
+                'duracion_funcional': survey['duracion_funcional'],
+                'duracion_disfuncional': survey['duracion_disfuncional'],
+                'voz_funcional': survey['voz_funcional'],
+                'voz_disfuncional': survey['voz_disfuncional'],
+                'fuentes_funcional': survey['fuentes_funcional'],
+                'fuentes_disfuncional': survey['fuentes_disfuncional']
+            })
         
         conn.close()
         
-        return jsonify({'success': True, 'message': 'CSV files exported successfully'})
+        # Return all data as JSON
+        return jsonify({
+            'success': True,
+            'timestamp': datetime.now().isoformat(),
+            'data': {
+                'emails': {
+                    'count': len(emails_data),
+                    'records': emails_data
+                },
+                'feedback': {
+                    'count': len(feedbacks_data),
+                    'records': feedbacks_data
+                },
+                'kano_surveys': {
+                    'count': len(surveys_data),
+                    'records': surveys_data
+                }
+            }
+        })
         
     except Exception as e:
-        return jsonify({'success': False, 'message': 'Error exporting CSV files'}), 500
+        return jsonify({
+            'success': False, 
+            'message': 'Error exporting data',
+            'error': str(e)
+        }), 500
+
+@app.route('/api/emails')
+def get_emails():
+    """Get all email submissions"""
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM email_submissions ORDER BY timestamp DESC')
+        emails = cursor.fetchall()
+        conn.close()
+        
+        emails_data = []
+        for email in emails:
+            emails_data.append({
+                'id': email['id'],
+                'email': email['email'],
+                'categories': email['categories'].split(',') if email['categories'] else [],
+                'podcast_request': email['podcast_request'],
+                'ip_address': email['ip_address'],
+                'timestamp': email['timestamp']
+            })
+        
+        return jsonify({
+            'success': True,
+            'count': len(emails_data),
+            'emails': emails_data
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'message': 'Error fetching emails',
+            'error': str(e)
+        }), 500
+
+@app.route('/api/feedback')
+def get_feedback():
+    """Get all feedback"""
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM feedback ORDER BY timestamp DESC')
+        feedbacks = cursor.fetchall()
+        conn.close()
+        
+        feedbacks_data = []
+        for feedback in feedbacks:
+            feedbacks_data.append({
+                'id': feedback['id'],
+                'type': feedback['type'],
+                'content': feedback['content'],
+                'email': feedback['email'],
+                'ip_address': feedback['ip_address'],
+                'timestamp': feedback['timestamp']
+            })
+        
+        return jsonify({
+            'success': True,
+            'count': len(feedbacks_data),
+            'feedback': feedbacks_data
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'message': 'Error fetching feedback',
+            'error': str(e)
+        }), 500
+
+@app.route('/api/kano-surveys')
+def get_kano_surveys():
+    """Get all Kano surveys"""
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM kano_surveys ORDER BY timestamp DESC')
+        surveys = cursor.fetchall()
+        conn.close()
+        
+        surveys_data = []
+        for survey in surveys:
+            surveys_data.append({
+                'id': survey['id'],
+                'email': survey['email'],
+                'ip_address': survey['ip_address'],
+                'timestamp': survey['timestamp'],
+                'personalizacion_funcional': survey['personalizacion_funcional'],
+                'personalizacion_disfuncional': survey['personalizacion_disfuncional'],
+                'duracion_funcional': survey['duracion_funcional'],
+                'duracion_disfuncional': survey['duracion_disfuncional'],
+                'voz_funcional': survey['voz_funcional'],
+                'voz_disfuncional': survey['voz_disfuncional'],
+                'fuentes_funcional': survey['fuentes_funcional'],
+                'fuentes_disfuncional': survey['fuentes_disfuncional']
+            })
+        
+        return jsonify({
+            'success': True,
+            'count': len(surveys_data),
+            'surveys': surveys_data
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'message': 'Error fetching Kano surveys',
+            'error': str(e)
+        }), 500
 
 @app.route('/health')
 def health_check():

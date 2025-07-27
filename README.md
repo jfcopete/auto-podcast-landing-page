@@ -290,18 +290,48 @@ Envía respuestas de la encuesta de Kano.
 }
 ```
 
-### GET /api/export-csv
-Exporta todos los datos a archivos CSV.
+### GET /api/export-data
+Exporta todos los datos como JSON.
 
 **Response:**
 ```json
 {
   "success": true,
-  "message": "CSV files exported successfully",
-  "emails_count": 42,
-  "feedback_count": 15
+  "timestamp": "2024-01-01T10:00:00Z",
+  "data": {
+    "emails": {
+      "count": 42,
+      "records": [
+        {
+          "id": 1,
+          "email": "usuario@ejemplo.com",
+          "categories": ["marketing", "tech"],
+          "podcast_request": "Podcast sobre IA",
+          "ip_address": "192.168.1.1",
+          "timestamp": "2024-01-01 10:00:00"
+        }
+      ]
+    },
+    "feedback": {
+      "count": 15,
+      "records": [...]
+    },
+    "kano_surveys": {
+      "count": 8,
+      "records": [...]
+    }
+  }
 }
 ```
+
+### GET /api/emails
+Obtiene todas las suscripciones de email.
+
+### GET /api/feedback
+Obtiene todo el feedback.
+
+### GET /api/kano-surveys
+Obtiene todas las encuestas de Kano.
 
 ### GET /health
 Health check del sistema.
