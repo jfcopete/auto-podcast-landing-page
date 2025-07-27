@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  backend:
+    build: .
+    container_name: auto-podcast-backend
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./data:/data  # Persist data in ./data folder
+      - ./:/app  # Mount entire app for development
+      - ./podcast_subscriptions.csv:/app/podcast_subscriptions.csv  # Persist root CSV
+    environment:
+      - FLASK_ENV=production
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:alpine
+    container_name: auto-podcast-nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./:/usr/share/nginx/html
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  data:
+    driver: local 

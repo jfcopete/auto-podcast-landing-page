@@ -9,32 +9,264 @@
 </head>
 <body>
     <header class="hero">
-        <h1>AI Podcast Generator</h1>
-        <p>Podcasts diarios y personalizados en menos de 5 minutos.</p>
-        <div class="cta">
-            <input type="email" id="email" placeholder="Tu email" required>
-            <select id="categories" multiple>
-                <option value="marketing">Marketing</option>
-                <option value="tech">Tech</option>
-                <option value="cultura">Cultura</option>
-                <option value="finanzas">Finanzas</option>
-                <option value="deportes">Deportes</option>
-                <option value="salud">Salud</option>
-                <option value="arte">Arte</option>
-            </select>
-            <button id="subscribe">Quiero mi podcast a medida</button>
-            <p id="message"></p>
-            <p class="counter">Interesados: <span id="count">0</span></p>
+        <div class="hero-content">
+            <h1>AI Podcast Generator</h1>
+            <p class="hero-subtitle">Podcasts diarios y personalizados en menos de 5 minutos.</p>
+            <div class="hero-features">
+                <div class="feature-badge">
+                    <span class="flag">🌍</span>
+                    <span>Múltiples idiomas</span>
+                </div>
+                <div class="feature-badge">
+                    <span class="flag">✅</span>
+                    <span>Fact-checking automático</span>
+                </div>
+                <div class="feature-badge">
+                    <span class="flag">⚡</span>
+                    <span>Generación rápida</span>
+                </div>
+            </div>
         </div>
     </header>
-    <section class="features">
-        <h2>Características de Performance</h2>
-        <ul>
-            <li>Ajusta la profundidad del contenido: titulares breves o análisis profundos.</li>
-            <li>Fuentes claras y confiables en cada episodio.</li>
-            <li>Episodios rápidos de 3 a 5 minutos.</li>
-        </ul>
+    <section class="audio-samples">
+        <h2>Escucha Nuestros Podcasts de Muestra</h2>
+        <p class="audio-invitation">Descubre la calidad y el estilo de nuestros podcasts generados por IA. Disponible en múltiples idiomas con verificación automática de fuentes.</p>
+        <div class="audio-grid">
+            <div class="audio-card">
+                <div class="audio-header">
+                    <h3>Vulnerabilidades en IA</h3>
+                    <div class="language-badge">
+                        <span class="flag">🇪🇸</span>
+                        <span>Español</span>
+                    </div>
+                </div>
+                <p>Exploramos las vulnerabilidades y desafíos de seguridad en los sistemas de inteligencia artificial.</p>
+                <audio controls>
+                    <source src="assets/audios/Vulnerabilidades en AI.wav" type="audio/wav">
+                    Tu navegador no soporta el elemento de audio.
+                </audio>
+                <div class="audio-info">
+                    <span class="duration">~6 min</span>
+                    <span class="category">Tecnología</span>
+                    <span class="fact-check">✅ Verificado</span>
+                </div>
+            </div>
+            <div class="audio-card">
+                <div class="audio-header">
+                    <h3>Análisis Técnico del Mercado</h3>
+                    <div class="language-badge">
+                        <span class="flag">🇪🇸</span>
+                        <span>Español</span>
+                    </div>
+                </div>
+                <p>Análisis técnico detallado de Pablo Gil sobre cómo invertir en el mercado actual y estrategias de trading.</p>
+                <audio controls preload="metadata">
+                    <source src="assets/audios/Technical Analysis for Stock Market Investment.wav" type="audio/wav">
+                    Tu navegador no soporta el elemento de audio.
+                </audio>
+                <div class="audio-info">
+                    <span class="duration">~7 min</span>
+                    <span class="category">Finanzas</span>
+                    <span class="fact-check">✅ Verificado</span>
+                </div>
+            </div>
+            <div class="audio-card">
+                <div class="audio-header">
+                    <h3>Dopamine Fasting</h3>
+                    <div class="language-badge">
+                        <span class="flag">🇪🇸</span>
+                        <span>Español</span>
+                    </div>
+                </div>
+                <p>Explora la ciencia detrás del ayuno de dopamina y cómo resetear el sistema de recompensas de tu cerebro para mejor enfoque y productividad.</p>
+                <audio controls preload="metadata">
+                    <source src="assets/audios/Dopamine Fasting_ Science, Habits, and Self-Control.wav" type="audio/wav">
+                    Tu navegador no soporta el elemento de audio.
+                </audio>
+                <div class="audio-info">
+                    <span class="duration">~7 min</span>
+                    <span class="category">Salud</span>
+                    <span class="fact-check">✅ Verificado</span>
+                </div>
+            </div>
+        </div>
+        <div class="integrated-section">
+            <div class="section-header">
+                <h3>¿Te gustó lo que escuchaste?</h3>
+                <p>Suscríbete para recibir podcasts personalizados y ayúdanos a mejorar</p>
+            </div>
+            <div class="integrated-content">
+                <div class="signup-part">
+                    <h4>📧 Suscripción</h4>
+                    <p>Recibe podcasts personalizados en tu idioma preferido</p>
+                    <div class="cta-form">
+                        <div class="form-group">
+                            <input type="email" id="email" placeholder="Tu email" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="tags-label">Selecciona tus intereses:</label>
+                            <div class="tags-container">
+                                <span class="tag" data-value="marketing">Marketing</span>
+                                <span class="tag" data-value="tech">Tech</span>
+                                <span class="tag" data-value="cultura">Cultura</span>
+                                <span class="tag" data-value="finanzas">Finanzas</span>
+                                <span class="tag" data-value="deportes">Deportes</span>
+                                <span class="tag" data-value="salud">Salud</span>
+                                <span class="tag" data-value="arte">Arte</span>
+                                <span class="tag" data-value="ciencia">Ciencia</span>
+                                <span class="tag" data-value="historia">Historia</span>
+                                <span class="tag" data-value="viajes">Viajes</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="prompt-label">¿Qué podcast te gustaría escuchar?</label>
+                            <textarea id="podcastRequest" placeholder="Ej: Un podcast sobre inteligencia artificial en español, de 5 minutos, con ejemplos prácticos..." rows="3"></textarea>
+                        </div>
+                        <button id="subscribe">Quiero mi podcast a medida</button>
+                        <p id="message"></p>
+                        <p class="counter">Interesados: <span id="count">0</span></p>
+                    </div>
+                </div>
+                <div class="feedback-part">
+                    <h4>📊 Encuesta de Mejora</h4>
+                    <p>Cuéntanos qué características son más importantes para ti</p>
+                    <div class="kano-survey">
+                        <form id="kanoForm">
+                            <!-- A. Personalización -->
+                            <div class="kano-question-group">
+                                <h5>A. Personalización del Contenido</h5>
+                                
+                                <div class="question">
+                                    <p>¿Cómo te sentirías si el podcast fuera personalizado según tus intereses?</p>
+                                    <div class="kano-options">
+                                        <label><input type="radio" name="personalizacion_funcional" value="me_encantaria" required> Me encantaría</label>
+                                        <label><input type="radio" name="personalizacion_funcional" value="lo_espero"> Lo espero</label>
+                                        <label><input type="radio" name="personalizacion_funcional" value="me_es_indiferente"> Me es indiferente</label>
+                                        <label><input type="radio" name="personalizacion_funcional" value="podria_vivir_con_ello"> Podría vivir con ello</label>
+                                        <label><input type="radio" name="personalizacion_funcional" value="lo_odiaria"> Lo odiaría</label>
+                                    </div>
+                                </div>
+                                
+                                <div class="question">
+                                    <p>¿Cómo te sentirías si el podcast NO fuera personalizado?</p>
+                                    <div class="kano-options">
+                                        <label><input type="radio" name="personalizacion_disfuncional" value="me_encantaria" required> Me encantaría</label>
+                                        <label><input type="radio" name="personalizacion_disfuncional" value="lo_espero"> Lo espero</label>
+                                        <label><input type="radio" name="personalizacion_disfuncional" value="me_es_indiferente"> Me es indiferente</label>
+                                        <label><input type="radio" name="personalizacion_disfuncional" value="podria_vivir_con_ello"> Podría vivir con ello</label>
+                                        <label><input type="radio" name="personalizacion_disfuncional" value="lo_odiaria"> Lo odiaría</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- B. Duración breve -->
+                            <div class="kano-question-group">
+                                <h5>B. Duración Breve (3-5 minutos)</h5>
+                                
+                                <div class="question">
+                                    <p>¿Cómo te sentirías si el podcast durara solo 3-5 minutos?</p>
+                                    <div class="kano-options">
+                                        <label><input type="radio" name="duracion_funcional" value="me_encantaria" required> Me encantaría</label>
+                                        <label><input type="radio" name="duracion_funcional" value="lo_espero"> Lo espero</label>
+                                        <label><input type="radio" name="duracion_funcional" value="me_es_indiferente"> Me es indiferente</label>
+                                        <label><input type="radio" name="duracion_funcional" value="podria_vivir_con_ello"> Podría vivir con ello</label>
+                                        <label><input type="radio" name="duracion_funcional" value="lo_odiaria"> Lo odiaría</label>
+                                    </div>
+                                </div>
+                                
+                                <div class="question">
+                                    <p>¿Cómo te sentirías si el podcast durara más de 15 minutos?</p>
+                                    <div class="kano-options">
+                                        <label><input type="radio" name="duracion_disfuncional" value="me_encantaria" required> Me encantaría</label>
+                                        <label><input type="radio" name="duracion_disfuncional" value="lo_espero"> Lo espero</label>
+                                        <label><input type="radio" name="duracion_disfuncional" value="me_es_indiferente"> Me es indiferente</label>
+                                        <label><input type="radio" name="duracion_disfuncional" value="podria_vivir_con_ello"> Podría vivir con ello</label>
+                                        <label><input type="radio" name="duracion_disfuncional" value="lo_odiaria"> Lo odiaría</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- C. Voz natural -->
+                            <div class="kano-question-group">
+                                <h5>C. Voz Natural</h5>
+                                
+                                <div class="question">
+                                    <p>¿Cómo te sentirías si el podcast tuviera una voz natural y creíble?</p>
+                                    <div class="kano-options">
+                                        <label><input type="radio" name="voz_funcional" value="me_encantaria" required> Me encantaría</label>
+                                        <label><input type="radio" name="voz_funcional" value="lo_espero"> Lo espero</label>
+                                        <label><input type="radio" name="voz_funcional" value="me_es_indiferente"> Me es indiferente</label>
+                                        <label><input type="radio" name="voz_funcional" value="podria_vivir_con_ello"> Podría vivir con ello</label>
+                                        <label><input type="radio" name="voz_funcional" value="lo_odiaria"> Lo odiaría</label>
+                                    </div>
+                                </div>
+                                
+                                <div class="question">
+                                    <p>¿Cómo te sentirías si el podcast sonara robótico?</p>
+                                    <div class="kano-options">
+                                        <label><input type="radio" name="voz_disfuncional" value="me_encantaria" required> Me encantaría</label>
+                                        <label><input type="radio" name="voz_disfuncional" value="lo_espero"> Lo espero</label>
+                                        <label><input type="radio" name="voz_disfuncional" value="me_es_indiferente"> Me es indiferente</label>
+                                        <label><input type="radio" name="voz_disfuncional" value="podria_vivir_con_ello"> Podría vivir con ello</label>
+                                        <label><input type="radio" name="voz_disfuncional" value="lo_odiaria"> Lo odiaría</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- D. Fuentes claras -->
+                            <div class="kano-question-group">
+                                <h5>D. Fuentes Transparentes</h5>
+                                
+                                <div class="question">
+                                    <p>¿Cómo te sentirías si siempre supieras el origen de la información?</p>
+                                    <div class="kano-options">
+                                        <label><input type="radio" name="fuentes_funcional" value="me_encantaria" required> Me encantaría</label>
+                                        <label><input type="radio" name="fuentes_funcional" value="lo_espero"> Lo espero</label>
+                                        <label><input type="radio" name="fuentes_funcional" value="me_es_indiferente"> Me es indiferente</label>
+                                        <label><input type="radio" name="fuentes_funcional" value="podria_vivir_con_ello"> Podría vivir con ello</label>
+                                        <label><input type="radio" name="fuentes_funcional" value="lo_odiaria"> Lo odiaría</label>
+                                    </div>
+                                </div>
+                                
+                                <div class="question">
+                                    <p>¿Cómo te sentirías si no supieras de dónde proviene la información del podcast?</p>
+                                    <div class="kano-options">
+                                        <label><input type="radio" name="fuentes_disfuncional" value="me_encantaria" required> Me encantaría</label>
+                                        <label><input type="radio" name="fuentes_disfuncional" value="lo_espero"> Lo espero</label>
+                                        <label><input type="radio" name="fuentes_disfuncional" value="me_es_indiferente"> Me es indiferente</label>
+                                        <label><input type="radio" name="fuentes_disfuncional" value="podria_vivir_con_ello"> Podría vivir con ello</label>
+                                        <label><input type="radio" name="fuentes_disfuncional" value="lo_odiaria"> Lo odiaría</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <input type="email" id="kanoEmail" placeholder="Tu email (opcional)" />
+                            </div>
+                            
+                            <button type="submit" id="submitKano">Enviar Encuesta</button>
+                            <p id="kanoMessage"></p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
+    <div class="content-sections">
+        <section class="features">
+            <h2>Características de Performance</h2>
+            <ul>
+                <li>Ajusta la profundidad del contenido: titulares breves o análisis profundos.</li>
+                <li>Fuentes claras y confiables en cada episodio.</li>
+                <li>Episodios rápidos de 3 a 5 minutos.</li>
+            </ul>
+        </section>
+        <section class="testimonials">
+            <h2>Testimonios</h2>
+            <blockquote>"Por fin un podcast a mi ritmo, sin perderme nada importante."</blockquote>
+            <blockquote>"Me encanta que el resumen suene natural y siempre mencione algo personal."</blockquote>
+        </section>
+    </div>
     <section class="delighters">
         <h2>Delighters</h2>
         <ul>
@@ -43,13 +275,30 @@
             <li>Voz natural y cercana.</li>
         </ul>
     </section>
-    <section class="testimonials">
-        <blockquote>“Por fin un podcast a mi ritmo, sin perderme nada importante.”</blockquote>
-        <blockquote>“Me encanta que el resumen suene natural y siempre mencione algo personal.”</blockquote>
-    </section>
     <footer>
-        <p>Tu email no será almacenado, solo sumará al contador de interesados.</p>
+        <p>© 2024 AI Podcast Generator. Todos los derechos reservados.</p>
     </footer>
     <script src="script.js"></script>
+    <script>
+        // Show development notice if running from file://
+        if (window.location.protocol === 'file:') {
+            const notice = document.createElement('div');
+            notice.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                background: #ff6b6b;
+                color: white;
+                padding: 10px;
+                text-align: center;
+                font-weight: bold;
+                z-index: 10000;
+                font-size: 14px;
+            `;
+            notice.innerHTML = '⚠️ Modo desarrollo: Abre esta página usando Docker para funcionalidad completa. Ver README.md para instrucciones.';
+            document.body.appendChild(notice);
+        }
+    </script>
 </body>
 </html>
