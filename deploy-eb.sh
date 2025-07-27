@@ -26,11 +26,10 @@ cp index.html ./
 cp style.css ./
 cp script.js ./
 cp -r assets/ ./
-cp nginx.conf ./
 
-# Create ZIP file
+# Create ZIP file (exclude unnecessary files)
 echo "🗜️ Creating deployment package..."
-zip -r auto-podcast-eb.zip . -x "*.git*" "*.DS_Store*" "data/*" "*.csv" "*.db"
+zip -r auto-podcast-eb.zip . -x "*.git*" "*.DS_Store*" "data/*" "*.csv" "*.db" "docker-compose.yml" "nginx.conf" "deploy-ec2.sh" "ec2-setup.md" "verify-deployment.md"
 
 # Deploy to EB
 echo "🌐 Deploying to Elastic Beanstalk..."

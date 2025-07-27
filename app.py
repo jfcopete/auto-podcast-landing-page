@@ -1,11 +1,11 @@
-from flask import Flask, request, jsonify
-from flask_cors import CORS
-import sqlite3
 import os
 import csv
 from datetime import datetime
+from flask import Flask, request, jsonify, send_from_directory
+from flask_cors import CORS
+import sqlite3
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='.', static_url_path='')
 CORS(app)
 
 # Database and CSV file paths
@@ -93,17 +93,6 @@ def init_csv_files():
             writer = csv.writer(csvfile)
             writer.writerow(['timestamp', 'email', 'categories', 'podcast_request'])
 
-def save_to_csv_feedback(feedback_id, feedback_type, content, email, ip_address, timestamp):
-    """Save feedback to CSV file"""
-    try:
-        with open(CSV_FEEDBACK_FILE, 'a', newline='', encoding='utf-8') as csvfile:
-            writer = csv.writer(csvfile)
-            writer.writerow([feedback_id, feedback_type, content, email, ip_address, timestamp])
-        return True
-    except Exception as e:
-        print(f"Error saving to CSV: {e}")
-        return False
-
 def save_to_csv_email(submission_id, email, categories, podcast_request, ip_address, timestamp):
     """Save email submission to CSV files"""
     try:
@@ -120,6 +109,17 @@ def save_to_csv_email(submission_id, email, categories, podcast_request, ip_addr
         return True
     except Exception as e:
         print(f"Error saving email to CSV: {e}")
+        return False
+
+def save_to_csv_feedback(feedback_id, feedback_type, content, email, ip_address, timestamp):
+    """Save feedback to CSV file"""
+    try:
+        with open(CSV_FEEDBACK_FILE, 'a', newline='', encoding='utf-8') as csvfile:
+            writer = csv.writer(csvfile)
+            writer.writerow([feedback_id, feedback_type, content, email, ip_address, timestamp])
+        return True
+    except Exception as e:
+        print(f"Error saving feedback to CSV: {e}")
         return False
 
 def save_to_csv_kano(survey_id, email, ip_address, timestamp, survey_data):
@@ -142,6 +142,16 @@ def save_to_csv_kano(survey_id, email, ip_address, timestamp, survey_data):
     except Exception as e:
         print(f"Error saving Kano survey to CSV: {e}")
         return False
+
+@app.route('/')
+def index():
+    """Serve the main page"""
+    return send_from_directory('.', 'index.html')
+
+@app.route('/<path:filename>')
+def static_files(filename):
+    """Serve static files"""
+    return send_from_directory('.', filename)
 
 @app.route('/api/submit-email', methods=['POST'])
 def submit_email():
@@ -180,9 +190,9 @@ def submit_email():
     except Exception as e:
         return jsonify({'success': False, 'message': 'Error interno del servidor'}), 500
 
-@app.route('/api/counter', methods=['GET'])
+@app.route('/api/counter')
 def get_counter():
-    """Get total number of email submissions"""
+    """Get subscription counter"""
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
@@ -190,42 +200,31 @@ def get_counter():
         result = cursor.fetchone()
         conn.close()
         
-        return jsonify({'count': result['count']})
-        
+        count = result['count'] if result else 0
+        return jsonify({'count': count})
     except Exception as e:
         return jsonify({'count': 0})
 
 @app.route('/api/feedback', methods=['POST'])
 def submit_feedback():
-    """Submit feedback or new ideas to database and CSV"""
+    """Submit feedback"""
     try:
         data = request.get_json()
-        feedback_type = data.get('type', 'idea')  # 'idea' or 'feedback'
+        feedback_type = data.get('type', 'feedback')
         content = data.get('content', '').strip()
         email = data.get('email', '').strip()
-        
-        if not content:
-            return jsonify({'success': False, 'message': 'El contenido es requerido'}), 400
         
         # Get client IP
         ip_address = request.headers.get('X-Forwarded-For', request.remote_addr)
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         
+        if not content:
+            return jsonify({'success': False, 'message': 'Contenido es requerido'}), 400
+        
         conn = get_db_connection()
         cursor = conn.cursor()
         
-        # Create feedback table if it doesn't exist
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS feedback (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                type TEXT NOT NULL,
-                content TEXT NOT NULL,
-                email TEXT,
-                ip_address TEXT,
-                timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-            )
-        ''')
-        
+        # Insert feedback
         cursor.execute('''
             INSERT INTO feedback (type, content, email, ip_address)
             VALUES (?, ?, ?, ?)
@@ -245,7 +244,7 @@ def submit_feedback():
 
 @app.route('/api/kano-survey', methods=['POST'])
 def submit_kano_survey():
-    """Submit Kano survey responses"""
+    """Submit Kano survey"""
     try:
         data = request.get_json()
         email = data.get('email', '').strip()
@@ -254,26 +253,27 @@ def submit_kano_survey():
         ip_address = request.headers.get('X-Forwarded-For', request.remote_addr)
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         
-        # Extract survey data
-        survey_data = {
-            'personalizacion_funcional': data.get('personalizacion_funcional', ''),
-            'personalizacion_disfuncional': data.get('personalizacion_disfuncional', ''),
-            'duracion_funcional': data.get('duracion_funcional', ''),
-            'duracion_disfuncional': data.get('duracion_disfuncional', ''),
-            'voz_funcional': data.get('voz_funcional', ''),
-            'voz_disfuncional': data.get('voz_disfuncional', ''),
-            'fuentes_funcional': data.get('fuentes_funcional', ''),
-            'fuentes_disfuncional': data.get('fuentes_disfuncional', '')
-        }
+        # Extract survey responses
+        survey_data = {}
+        radio_groups = [
+            'personalizacion_funcional', 'personalizacion_disfuncional',
+            'duracion_funcional', 'duracion_disfuncional',
+            'voz_funcional', 'voz_disfuncional',
+            'fuentes_funcional', 'fuentes_disfuncional'
+        ]
+        
+        for field in radio_groups:
+            survey_data[field] = data.get(field, '')
         
         conn = get_db_connection()
         cursor = conn.cursor()
         
-        # Insert survey data
+        # Insert Kano survey
         cursor.execute('''
             INSERT INTO kano_surveys (
-                email, ip_address, personalizacion_funcional, personalizacion_disfuncional, duracion_funcional, duracion_disfuncional,
-                voz_funcional, voz_disfuncional, fuentes_funcional, fuentes_disfuncional
+                email, ip_address, personalizacion_funcional, personalizacion_disfuncional,
+                duracion_funcional, duracion_disfuncional, voz_funcional, voz_disfuncional,
+                fuentes_funcional, fuentes_disfuncional
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
             email, ip_address,
@@ -295,26 +295,16 @@ def submit_kano_survey():
     except Exception as e:
         return jsonify({'success': False, 'message': 'Error interno del servidor'}), 500
 
-@app.route('/api/export-csv', methods=['GET'])
+@app.route('/api/export-csv')
 def export_csv():
     """Export all data to CSV files"""
     try:
-        # Ensure CSV files are initialized
-        init_csv_files()
-        
-        # Export emails
         conn = get_db_connection()
         cursor = conn.cursor()
         
-        # Get all email submissions
-        cursor.execute('SELECT * FROM email_submissions ORDER BY timestamp DESC')
+        # Get all emails
+        cursor.execute('SELECT * FROM email_submissions')
         emails = cursor.fetchall()
-        
-        # Get all feedback
-        cursor.execute('SELECT * FROM feedback ORDER BY timestamp DESC')
-        feedback = cursor.fetchall()
-        
-        conn.close()
         
         # Write emails to CSV
         with open(CSV_EMAILS_FILE, 'w', newline='', encoding='utf-8') as csvfile:
@@ -324,26 +314,46 @@ def export_csv():
                 writer.writerow([email['id'], email['email'], email['categories'], email['podcast_request'], email['ip_address'], email['timestamp']])
         
         # Write feedback to CSV
+        cursor.execute('SELECT * FROM feedback')
+        feedbacks = cursor.fetchall()
+        
         with open(CSV_FEEDBACK_FILE, 'w', newline='', encoding='utf-8') as csvfile:
             writer = csv.writer(csvfile)
             writer.writerow(['id', 'type', 'content', 'email', 'ip_address', 'timestamp'])
-            for fb in feedback:
-                writer.writerow([fb['id'], fb['type'], fb['content'], fb['email'], fb['ip_address'], fb['timestamp']])
+            for feedback in feedbacks:
+                writer.writerow([feedback['id'], feedback['type'], feedback['content'], feedback['email'], feedback['ip_address'], feedback['timestamp']])
         
-        return jsonify({
-            'success': True, 
-            'message': 'CSV files exported successfully',
-            'emails_count': len(emails),
-            'feedback_count': len(feedback)
-        })
+        # Write Kano surveys to CSV
+        cursor.execute('SELECT * FROM kano_surveys')
+        surveys = cursor.fetchall()
+        
+        with open('/data/kano_surveys.csv', 'w', newline='', encoding='utf-8') as csvfile:
+            writer = csv.writer(csvfile)
+            writer.writerow([
+                'id', 'email', 'ip_address', 'timestamp',
+                'personalizacion_funcional', 'personalizacion_disfuncional', 'duracion_funcional', 'duracion_disfuncional',
+                'voz_funcional', 'voz_disfuncional', 'fuentes_funcional', 'fuentes_disfuncional'
+            ])
+            for survey in surveys:
+                writer.writerow([
+                    survey['id'], survey['email'], survey['ip_address'], survey['timestamp'],
+                    survey['personalizacion_funcional'], survey['personalizacion_disfuncional'],
+                    survey['duracion_funcional'], survey['duracion_disfuncional'],
+                    survey['voz_funcional'], survey['voz_disfuncional'],
+                    survey['fuentes_funcional'], survey['fuentes_disfuncional']
+                ])
+        
+        conn.close()
+        
+        return jsonify({'success': True, 'message': 'CSV files exported successfully'})
         
     except Exception as e:
-        return jsonify({'success': False, 'message': f'Error exporting CSV: {str(e)}'}), 500
+        return jsonify({'success': False, 'message': 'Error exporting CSV files'}), 500
 
-@app.route('/health', methods=['GET'])
+@app.route('/health')
 def health_check():
     """Health check endpoint"""
-    return jsonify({'status': 'healthy'})
+    return jsonify({'status': 'healthy', 'timestamp': datetime.now().isoformat()})
 
 if __name__ == '__main__':
     # Ensure data directory exists
@@ -353,4 +363,5 @@ if __name__ == '__main__':
     init_db()
     init_csv_files()
     
+    # Run the application
     app.run(host='0.0.0.0', port=5000, debug=False) 
